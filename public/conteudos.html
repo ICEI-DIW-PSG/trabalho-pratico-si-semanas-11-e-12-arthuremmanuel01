@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit Web • Conteúdos</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Pequenas mudanças no estilo espicíficos para essa página */
+        .page-header {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 8px clamp(16px, 3vw, 40px) 18px;
+        }
+
+        .page-header h1 {
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: .35em;
+            color: var(--brand);
+            font-size: var(--h2);
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 8px 0 14px 0;
+        }
+
+        .pill {
+            border: 1px dashed rgba(255, 255, 255, .15);
+            background: rgba(255, 255, 255, .03);
+            color: var(--text);
+            padding: 8px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .95rem;
+            transition: transform .15s ease, border-color .15s ease;
+        }
+
+        .pill:hover {
+            transform: translateY(-1px);
+            border-color: var(--brand);
+        }
+
+        .pill [aria-current="true"] {
+            background: var(--brand);
+            color: #0c0c0e;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="site-header" id="topo" aria-label="Cabeçalho">
+        <div class="container header-wrap">
+            <a href="index.html#inicio" class="brand" aria-label="Fit Web - Página Inicial">
+                <img src="imgs/logo.png" alt="Fit Web - Treining Hub" width="250">
+            </a>
+
+            <!-- Botão hambúrguer acessível -->
+            <button class="nav-toggle" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">
+                <span class="lines" aria-hidden="true"></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+                <ul>
+                    <li><a href="index.html#inicio">Início</a></li>
+                    <li><a href="conteudos.html">Conteúdos</a></li>
+                    <li><a href="categorias.html">Categorias</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content-bg" aria-label="Conteúdo Principal">
+        <div class="page-header">
+            <h1>Conteúdos</h1>
+            <div class="filter-bar" id="filterBar" aria-label="Filtro por Categoria"></div>
+        </div>
+
+        <div class="container">
+            <ul class="tiles-grid" id="grid" aria-live="polite"></ul>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© Arthur Emmanuel Oliveira Marinho</p>
+            <address><a href="mailto:aeomarinho@sga.pucminas.br">aeomarinho@sga.pucminas.br</a></address>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+
+    <!-- Especifico da página -->
+    <script>
+        const getParam = (n) => new URLSearchParams(location.search).get(n);
+
+        const categorias = Array.from(new Set(aulas.map(a => a.categoria))).sort();
+
+        let catAtual = getParam("cat") || "Todas";
+        const filterBar = document.getElementById("filterBar");
+        const grid = document.getElementById("grid");
+
+        function renderPills() {
+            const todas = ["Todas", ...categorias];
+            filterBar.innerHTML = todas.map(c => `
+                <button class="pill" data-cat="${c}" aria-current="${c === catAtual}">
+                ${c}
+                </button>
+            `).join("");
+            filterBar.querySelectorAll(".pill").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    catAtual = btn.dataset.cat;
+                    filterBar.querySelectorAll(".pill").forEach(p => p.setAttribute("aria-current", p.dataset.cat === catAtual));
+                    const p = new URLSearchParams(location.search);
+                    if (catAtual === "Todas") { p.delete("cat"); } else { p.set("cat", catAtual); }
+                    history.replaceState({}, "", `?${p}`);
+                    // re-render da grade
+                    renderGrid();
+                });
+            });
+        }
+
+        function renderGrid() {
+            const base = (catAtual === "Todas") ? aulas : aulas.filter(a => a.categoria === catAtual);
+
+            grid.innerHTML = base.map(a => `
+                <li class="tile">
+                <a href="detalhes.html?id=${a.id}" aria-label="${a.titulo}">
+                    <img class="tile-cover"
+                        src="https://img.youtube.com/vi/${a.videoId}/maxresdefault.jpg"
+                        onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${a.videoId}/hqdefault.jpg'"
+                        alt="${a.titulo}">
+                    <div class="tile-body">
+                    <p class="tile-title">${a.titulo}</p>
+                    <p class="tile-desc">${a.resumo}</p>
+                    <div class="tile-line"></div>
+                    </div>
+                </a>
+                </li>
+            `).join("");
+        }
+
+        renderPills();
+        renderGrid();
+    </script>
+
+</body>
+
+</html>

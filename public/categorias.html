@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit Web • Categorias</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Css especifico / Cabeçalho padronizado-->
+    <style>
+        .page-header {
+            max-width: var(--container);
+            margin: 0 auto;
+            padding: 8px clamp(16px, 3vw, 40px) 0;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: .35em;
+            color: var(--brand);
+            font-size: var(--h2);
+        }
+
+        .cat-title {
+            margin: 18px 0 10px 0;
+            color: var(--brand);
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            font-size: var(--h3);
+        }
+
+        .cat-section {
+            margin-bottom: 24px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header class="site-header" id="topo" aria-label="Cabeçalho">
+        <div class="container header-wrap">
+            <a href="index.html#inicio" class="brand" aria-label="Fit Web - Página Inicial">
+                <img src="imgs/logo.png" alt="Fit Web - Treining Hub" width="250">
+            </a>
+
+            <!-- Botão hambúrguer acessível -->
+            <button class="nav-toggle" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir menu">
+                <span class="lines" aria-hidden="true"></span>
+            </button>
+
+            <nav class="main-nav" id="mainNav" aria-label="Navegação principal">
+                <ul>
+                    <li><a href="index.html#inicio">Início</a></li>
+                    <li><a href="conteudos.html">Conteúdos</a></li>
+                    <li><a href="categorias.html">Categorias</a></li>
+                    <li><a href="contato.html">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content-bg" aria-label="Conteúdo Principal">
+        <div class="page-header">
+            <h1>Categorias</h1>
+        </div>
+        <div class="container" id="catsWrap"></div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>© Arthur Emmanuel Oliveira Marinho</p>
+            <address><a href="mailto:aeomarinho@sga.pucminas.br">aeomarinho@sga.pucminas.br</a></address>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        const grupos = aulas.reduce((acc, a) => {
+            (acc[a.categoria] ||= []).push(a);
+            return acc;
+        }, {});
+
+        const ordemCategorias = Object.keys(grupos).sort();
+
+        const wrap = document.getElementById("catsWrap");
+
+        wrap.innerHTML = ordemCategorias.map(cat => `
+            <section class="cat-section" aria-labelledby="ttl-${cat}">
+                <h2 id="ttl-${cat}" class="cat-title">${cat}</h2>
+                <ul class="tiles-grid">
+                    ${grupos[cat].map(a => `
+                        <li class="tile">
+                            <a href="detalhes.html?id=${a.id}" aria-label="${a.titulo}">
+                                <img class="tile-cover"
+                                    src="https://img.youtube.com/vi/${a.videoId}/maxresdefault.jpg"
+                                    onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${a.videoId}/hqdefault.jpg'"
+                                    alt="${a.titulo}">
+                                <div class="tile-body">
+                                    <p class="tile-title">${a.titulo}</p>
+                                    <p class="tile-desc">${a.resumo}</p>
+                                    <div class="tile-line"></div>
+                                </div>
+                            </a>
+                        </li>
+                    `).join("")}
+                </ul>
+            </section>
+        `).join("");
+    </script>
+
+</body>
+
+</html>
