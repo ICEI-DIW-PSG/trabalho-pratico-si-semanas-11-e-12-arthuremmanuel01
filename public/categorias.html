@@ -75,40 +75,7 @@
         </div>
     </footer>
 
-    <script src="app.js"></script>
-    <script>
-        const grupos = aulas.reduce((acc, a) => {
-            (acc[a.categoria] ||= []).push(a);
-            return acc;
-        }, {});
-
-        const ordemCategorias = Object.keys(grupos).sort();
-
-        const wrap = document.getElementById("catsWrap");
-
-        wrap.innerHTML = ordemCategorias.map(cat => `
-            <section class="cat-section" aria-labelledby="ttl-${cat}">
-                <h2 id="ttl-${cat}" class="cat-title">${cat}</h2>
-                <ul class="tiles-grid">
-                    ${grupos[cat].map(a => `
-                        <li class="tile">
-                            <a href="detalhes.html?id=${a.id}" aria-label="${a.titulo}">
-                                <img class="tile-cover"
-                                    src="https://img.youtube.com/vi/${a.videoId}/maxresdefault.jpg"
-                                    onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${a.videoId}/hqdefault.jpg'"
-                                    alt="${a.titulo}">
-                                <div class="tile-body">
-                                    <p class="tile-title">${a.titulo}</p>
-                                    <p class="tile-desc">${a.resumo}</p>
-                                    <div class="tile-line"></div>
-                                </div>
-                            </a>
-                        </li>
-                    `).join("")}
-                </ul>
-            </section>
-        `).join("");
-    </script>
+    <script src="app.js" defer></script>
 
 </body>
 

@@ -25,28 +25,11 @@
         .filter-bar {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
             margin: 8px 0 14px 0;
         }
 
-        .pill {
-            border: 1px dashed rgba(255, 255, 255, .15);
-            background: rgba(255, 255, 255, .03);
-            color: var(--text);
-            padding: 8px 12px;
-            border-radius: 999px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: .95rem;
-            transition: transform .15s ease, border-color .15s ease;
-        }
-
-        .pill:hover {
-            transform: translateY(-1px);
-            border-color: var(--brand);
-        }
-
-        .pill [aria-current="true"] {
+        .filter-bar [aria-current="true"] {
             background: var(--brand);
             color: #0c0c0e;
         }
@@ -94,61 +77,7 @@
         </div>
     </footer>
 
-    <script src="app.js"></script>
-
-    <!-- Especifico da página -->
-    <script>
-        const getParam = (n) => new URLSearchParams(location.search).get(n);
-
-        const categorias = Array.from(new Set(aulas.map(a => a.categoria))).sort();
-
-        let catAtual = getParam("cat") || "Todas";
-        const filterBar = document.getElementById("filterBar");
-        const grid = document.getElementById("grid");
-
-        function renderPills() {
-            const todas = ["Todas", ...categorias];
-            filterBar.innerHTML = todas.map(c => `
-                <button class="pill" data-cat="${c}" aria-current="${c === catAtual}">
-                ${c}
-                </button>
-            `).join("");
-            filterBar.querySelectorAll(".pill").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    catAtual = btn.dataset.cat;
-                    filterBar.querySelectorAll(".pill").forEach(p => p.setAttribute("aria-current", p.dataset.cat === catAtual));
-                    const p = new URLSearchParams(location.search);
-                    if (catAtual === "Todas") { p.delete("cat"); } else { p.set("cat", catAtual); }
-                    history.replaceState({}, "", `?${p}`);
-                    // re-render da grade
-                    renderGrid();
-                });
-            });
-        }
-
-        function renderGrid() {
-            const base = (catAtual === "Todas") ? aulas : aulas.filter(a => a.categoria === catAtual);
-
-            grid.innerHTML = base.map(a => `
-                <li class="tile">
-                <a href="detalhes.html?id=${a.id}" aria-label="${a.titulo}">
-                    <img class="tile-cover"
-                        src="https://img.youtube.com/vi/${a.videoId}/maxresdefault.jpg"
-                        onerror="this.onerror=null;this.src='https://img.youtube.com/vi/${a.videoId}/hqdefault.jpg'"
-                        alt="${a.titulo}">
-                    <div class="tile-body">
-                    <p class="tile-title">${a.titulo}</p>
-                    <p class="tile-desc">${a.resumo}</p>
-                    <div class="tile-line"></div>
-                    </div>
-                </a>
-                </li>
-            `).join("");
-        }
-
-        renderPills();
-        renderGrid();
-    </script>
+    <script src="app.js" defer></script>
 
 </body>
 
